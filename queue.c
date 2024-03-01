@@ -10,7 +10,6 @@
  *   cppcheck-suppress nullPointer
  */
 
-
 /* Create an empty queue */
 struct list_head *q_new()
 {
@@ -129,6 +128,10 @@ bool q_delete_dup(struct list_head *head)
 /* Swap every two adjacent nodes */
 void q_swap(struct list_head *head)
 {
+    if (!head || list_empty(head) || list_is_singular(head))
+        return;
+    q_reverseK(head, 2);
+
     // https://leetcode.com/problems/swap-nodes-in-pairs/
 }
 
@@ -170,9 +173,7 @@ void q_reverseK(struct list_head *head, int k)
         }
     } while (temp != head);
 
-
     list_splice_init(&temp_head, head);
-
 
     // https://leetcode.com/problems/reverse-nodes-in-k-group/
 }
