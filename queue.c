@@ -198,7 +198,9 @@ int q_ascend(struct list_head *head)
         if (now == head)
             break;
         if (cmp(now, now->prev) > 0) {
+            element_t *rm_node = list_entry(now, element_t, list);
             list_del(now);
+            q_release_element(rm_node);
         }
     }
     q_reverse(head);
@@ -219,7 +221,9 @@ int q_descend(struct list_head *head)
         if (now == head)
             break;
         if (cmp(now, now->prev) < 0) {
+            element_t *rm_node = list_entry(now, element_t, list);
             list_del(now);
+            q_release_element(rm_node);
         }
     }
     q_reverse(head);
