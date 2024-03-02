@@ -10,6 +10,11 @@
  *   cppcheck-suppress nullPointer
  */
 
+static int cmp(struct list_head *a, struct list_head *b)
+{
+    return strcmp(list_entry(a, element_t, list)->value,
+                  list_entry(b, element_t, list)->value);
+}
 /* Create an empty queue */
 struct list_head *q_new()
 {
@@ -121,6 +126,24 @@ bool q_delete_mid(struct list_head *head)
 /* Delete all nodes that have duplicate string */
 bool q_delete_dup(struct list_head *head)
 {
+    if (!head || list_empty(head))
+        return false;
+
+    element_t *now, *safe_now;
+    bool dup = false;
+    list_for_each_entry_safe (now, safe_now, head, list) {
+        if (now->list.next != head &&
+            strcmp(now->value, safe_now->value) == 0) {
+            list_del(&now->list);
+            q_release_element(now);
+            dup = true;
+        } else if (dup) {
+            list_del(&now->list);
+            q_release_element(now);
+            dup = false;
+        }
+    }
+
     // https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/
     return true;
 }
@@ -177,11 +200,7 @@ void q_reverseK(struct list_head *head, int k)
 
     // https://leetcode.com/problems/reverse-nodes-in-k-group/
 }
-static int cmp(struct list_head *a, struct list_head *b)
-{
-    return strcmp(list_entry(a, element_t, list)->value,
-                  list_entry(b, element_t, list)->value);
-}
+
 /* Sort elements of queue in ascending/descending order */
 void q_sort(struct list_head *head, bool descend) {}
 
