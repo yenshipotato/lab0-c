@@ -177,7 +177,11 @@ void q_reverseK(struct list_head *head, int k)
 
     // https://leetcode.com/problems/reverse-nodes-in-k-group/
 }
-
+static int cmp(struct list_head *a, struct list_head *b)
+{
+    return strcmp(list_entry(a, element_t, list)->value,
+                  list_entry(b, element_t, list)->value);
+}
 /* Sort elements of queue in ascending/descending order */
 void q_sort(struct list_head *head, bool descend) {}
 
@@ -185,14 +189,42 @@ void q_sort(struct list_head *head, bool descend) {}
  * the right side of it */
 int q_ascend(struct list_head *head)
 {
+    if (!head || list_empty(head))
+        return 0;
+
+    struct list_head *now, *safe;
+    q_reverse(head);
+    list_for_each_safe (now, safe, head->next) {
+        if (now == head)
+            break;
+        if (cmp(now, now->prev) > 0) {
+            list_del(now);
+        }
+    }
+    q_reverse(head);
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
-    return 0;
+    return q_size(head);
 }
 
 /* Remove every node which has a node with a strictly greater value anywhere to
  * the right side of it */
 int q_descend(struct list_head *head)
 {
+    if (!head || list_empty(head))
+        return 0;
+
+    struct list_head *now, *safe;
+    q_reverse(head);
+    list_for_each_safe (now, safe, head->next) {
+        if (now == head)
+            break;
+        if (cmp(now, now->prev) < 0) {
+            list_del(now);
+        }
+    }
+    q_reverse(head);
+    // https://leetcode.com/problems/remove-nodes-from-linked-list/
+    return q_size(head);
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
     return 0;
 }
