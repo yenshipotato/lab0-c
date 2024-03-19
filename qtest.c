@@ -86,6 +86,26 @@ typedef enum {
 /* Forward declarations */
 static bool q_show(int vlevel);
 
+bool do_shuffle()
+{
+    if (!current)
+        return false;
+
+    srand(time(NULL));
+    for (int i = q_size(current->q); i > 0; i--) {
+        struct list_head *node = current->q;
+        int n = rand() % i + 1;
+
+        for (; n > 0; n--)
+            node = node->next;
+
+        list_del(node);
+        list_add_tail(node, current->q);
+    }
+    q_show(3);
+    return true;
+}
+
 static bool do_free(int argc, char *argv[])
 {
     if (argc != 1) {
@@ -1052,6 +1072,7 @@ static void console_init()
                 "");
     ADD_COMMAND(reverseK, "Reverse the nodes of the queue 'K' at a time",
                 "[K]");
+    ADD_COMMAND(shuffle, "shuffle", "");
     add_param("length", &string_length, "Maximum length of displayed string",
               NULL);
     add_param("malloc", &fail_probability, "Malloc failure probability percent",
