@@ -91,7 +91,7 @@ bool do_shuffle()
     if (!current)
         return false;
 
-    srand(time(NULL));
+
     for (int i = q_size(current->q); i > 0; i--) {
         struct list_head *node = current->q;
         int n = rand() % i + 1;
@@ -99,9 +99,9 @@ bool do_shuffle()
         for (; n > 0; n--)
             node = node->next;
 
-        list_del(node);
-        list_add_tail(node, current->q);
+        list_move_tail(node, current->q);
     }
+
     q_show(3);
     return true;
 }
